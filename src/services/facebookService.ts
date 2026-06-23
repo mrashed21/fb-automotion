@@ -11,12 +11,16 @@ async function postText(caption: string): Promise<string> {
   const res = await axios.post(`${FB_BASE}/${PAGE_ID}/feed`, {
     message: caption,
     access_token: ACCESS_TOKEN,
+    published: true,
   });
   return res.data.id;
 }
 
 // ইমেজ সহ পোস্ট
-async function postWithImage(caption: string, imageBuffer: Buffer): Promise<string> {
+async function postWithImage(
+  caption: string,
+  imageBuffer: Buffer,
+): Promise<string> {
   // Step 1: ছবি upload করি
   const form = new FormData();
   form.append("source", imageBuffer, {
@@ -35,7 +39,9 @@ async function postWithImage(caption: string, imageBuffer: Buffer): Promise<stri
 }
 
 // Main poster function
-export async function postToFacebook(content: GeneratedContent): Promise<PostResult> {
+export async function postToFacebook(
+  content: GeneratedContent,
+): Promise<PostResult> {
   try {
     let postId: string;
 
@@ -66,7 +72,9 @@ export async function refreshLongLivedToken(): Promise<string | null> {
     const appSecret = process.env.FB_APP_SECRET;
 
     if (!appId || !appSecret) {
-      console.warn("⚠️ FB_APP_ID বা FB_APP_SECRET নেই, token refresh skip করছি");
+      console.warn(
+        "⚠️ FB_APP_ID বা FB_APP_SECRET নেই, token refresh skip করছি",
+      );
       return null;
     }
 
