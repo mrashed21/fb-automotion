@@ -1,11 +1,12 @@
 import "dotenv/config";
 import cron from "node-cron";
-import { getTrendingTopics } from "./services/newsService";
+
 import {
-  generateIronyPost,
-  generateInfoPost,
   generateArticlePost,
   generateImage,
+  generateInfoPost,
+  generateIronyPost,
+  getRandomTopic,
 } from "./services/aiService";
 import { postToFacebook } from "./services/facebookService";
 import { GeneratedContent, PostType } from "./types";
@@ -13,26 +14,26 @@ import { GeneratedContent, PostType } from "./types";
 // ডেইলি পোস্ট schedule — বাংলাদেশ সময় (UTC+6)
 // UTC তে: 3,6,9,12,15 = BD তে: 9am, 12pm, 3pm, 6pm, 9pm
 const SCHEDULES: { cron: string; type: PostType; label: string }[] = [
-  { cron: "0 3 * * *", type: "irony_text",    label: "সকাল ৯টা — আইরনি পোস্ট" },
-  { cron: "0 6 * * *", type: "info_image",    label: "দুপুর ১২টা — তথ্য পোস্ট" },
-  { cron: "0 9 * * *", type: "irony_text",    label: "বিকাল ৩টা — আইরনি পোস্ট" },
-  { cron: "0 12 * * *", type: "article_image", label: "সন্ধ্যা ৬টা — আর্টিকেল পোস্ট" },
-  { cron: "0 15 * * *", type: "info_image",    label: "রাত ৯টা — তথ্য পোস্ট" },
+  { cron: "0 3 * * *", type: "irony_text", label: "সকাল ৯টা — আইরনি পোস্ট" },
+  { cron: "0 6 * * *", type: "info_image", label: "দুপুর ১২টা — তথ্য পোস্ট" },
+  { cron: "0 9 * * *", type: "irony_text", label: "বিকাল ৩টা — আইরনি পোস্ট" },
+  {
+    cron: "0 12 * * *",
+    type: "article_image",
+    label: "সন্ধ্যা ৬টা — আর্টিকেল পোস্ট",
+  },
+  { cron: "0 15 * * *", type: "info_image", label: "রাত ৯টা — তথ্য পোস্ট" },
 ];
 
 async function runPost(type: PostType): Promise<void> {
-  console.log(`\n🚀 শুরু হচ্ছে: ${type} — ${new Date().toLocaleString("bn-BD")}`);
+  console.log(
+    `\n🚀 শুরু হচ্ছে: ${type} — ${new Date().toLocaleString("bn-BD")}`,
+  );
 
   try {
-    // ১. Trending টপিক নাও
-    const topics = await getTrendingTopics();
-    if (!topics.length) {
-      console.error("❌ কোনো টপিক পাওয়া যায়নি");
-      return;
-    }
+    // ১. Random টপিক সিলেক্ট করো
 
-    // Random টপিক সিলেক্ট করো
-    const topic = topics[Math.floor(Math.random() * topics.length)];
+    const topic = getRandomTopic();
     console.log(`📌 টপিক: ${topic.title}`);
 
     // ২. কনটেন্ট জেনারেট করো
@@ -96,7 +97,9 @@ function startScheduler(): void {
     });
   }
 
-  console.log("\n✅ সব schedule সেট হয়েছে। পোস্ট হবে বাংলাদেশ সময় অনুযায়ী।\n");
+  console.log(
+    "\n✅ সব schedule সেট হয়েছে। পোস্ট হবে বাংলাদেশ সময় অনুযায়ী।\n",
+  );
 }
 
 // CLI argument check

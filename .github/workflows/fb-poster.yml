@@ -2,18 +2,17 @@ name: Facebook Auto Poster
 
 on:
   schedule:
-    # বাংলাদেশ সময় (UTC+6) অনুযায়ী ৫টা পোস্ট
-    - cron: "0 3 * * *"   # সকাল ৯টা BD
-    - cron: "0 6 * * *"   # দুপুর ১২টা BD
-    - cron: "0 9 * * *"   # বিকাল ৩টা BD
-    - cron: "0 12 * * *"  # সন্ধ্যা ৬টা BD
-    - cron: "0 15 * * *"  # রাত ৯টা BD
+    - cron: "0 2 * * *" # সকাল ৮টা BD
+    - cron: "0 6 * * *" # দুপুর ১২টা BD
+    - cron: "0 9 * * *" # বিকাল ৩টা BD
+    - cron: "0 12 * * *" # সন্ধ্যা ৬টা BD
+    - cron: "0 15 * * *" # রাত ৯টা BD
   workflow_dispatch:
     inputs:
       post_type:
-        description: 'Post type (irony/info/article/random)'
+        description: "Post type (irony/info/article/random)"
         required: false
-        default: 'random'
+        default: "random"
 
 jobs:
   post:
