@@ -4,7 +4,7 @@ import { GeneratedContent, TrendingTopic } from "../types";
 const AZURE_ENDPOINT = process.env.AZURE_ENDPOINT!;
 const AZURE_API_KEY = process.env.AZURE_API_KEY!;
 
-const DEFAULT_HASHTAGS = `\n\n#motivation #selfimprovement #psychology #islamicquotes #timemanagement #বাংলা #আত্মউন্নয়ন`;
+const DEFAULT_HASHTAGS = `\n\n#motivation #selfimprovement #psychology #islamicquotes #timemanagement #বাংলা #আত্মউন্নয়ন #mrashed21`;
 
 // কনটেন্ট টপিক — news এর বদলে fixed topics
 const CONTENT_TOPICS = [
