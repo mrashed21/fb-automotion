@@ -2,11 +2,11 @@ name: Facebook Auto Poster
 
 on:
   schedule:
-    - cron: "0 2 * * *" # সকাল ৮টা BD
-    - cron: "0 6 * * *" # দুপুর ১২টা BD
-    - cron: "0 9 * * *" # বিকাল ৩টা BD
-    - cron: "0 12 * * *" # সন্ধ্যা ৬টা BD
-    - cron: "0 15 * * *" # রাত ৯টা BD
+    - cron: "0 2 * * *"   # সকাল ৮টা BD
+    - cron: "0 6 * * *"   # দুপুর ১২টা BD
+    - cron: "0 9 * * *"   # বিকাল ৩টা BD
+    - cron: "0 12 * * *"  # সন্ধ্যা ৬টা BD
+    - cron: "0 15 * * *"  # রাত ৯টা BD
   workflow_dispatch:
     inputs:
       post_type:
@@ -34,11 +34,15 @@ jobs:
         id: post_type
         run: |
           HOUR=$(date -u +%H)
-          if [ "${{ github.event.inputs.post_type }}" != "" ] && [ "${{ github.event.inputs.post_type }}" != "random" ]; then
-            echo "flag=--${{ github.event.inputs.post_type }}" >> $GITHUB_OUTPUT
-          elif [ "$HOUR" = "3" ] || [ "$HOUR" = "9" ]; then
+          INPUT_TYPE="${{ github.event.inputs.post_type }}"
+
+          echo "Current UTC hour: $HOUR"
+
+          if [ -n "$INPUT_TYPE" ] && [ "$INPUT_TYPE" != "random" ]; then
+            echo "flag=--$INPUT_TYPE" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" = "02" ] || [ "$HOUR" = "2" ] || [ "$HOUR" = "9" ] || [ "$HOUR" = "09" ]; then
             echo "flag=--irony" >> $GITHUB_OUTPUT
-          elif [ "$HOUR" = "6" ] || [ "$HOUR" = "15" ]; then
+          elif [ "$HOUR" = "06" ] || [ "$HOUR" = "6" ] || [ "$HOUR" = "15" ]; then
             echo "flag=--info" >> $GITHUB_OUTPUT
           else
             echo "flag=--article" >> $GITHUB_OUTPUT
@@ -55,3 +59,13 @@ jobs:
           FB_APP_ID: ${{ secrets.FB_APP_ID }}
           FB_APP_SECRET: ${{ secrets.FB_APP_SECRET }}
         run: npx ts-node src/index.ts ${{ steps.post_type.outputs.flag }}
+
+      # Repo active রাখার জন্য dummy commit
+      - name: Keep repo active
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          echo "Last run: $(date -u)" > .last-run
+          git add .last-run
+          git commit -m "chore: keep alive [skip ci]" || echo "Nothing to commit"
+          git push || echo "Push failed"
