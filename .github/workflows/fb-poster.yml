@@ -2,11 +2,16 @@ name: Facebook Auto Poster
 
 on:
   schedule:
-    - cron: "0 2 * * *"   # সকাল ৮টা BD
-    - cron: "0 6 * * *"   # দুপুর ১২টা BD
-    - cron: "0 9 * * *"   # বিকাল ৩টা BD
-    - cron: "0 12 * * *"  # সন্ধ্যা ৬টা BD
-    - cron: "0 15 * * *"  # রাত ৯টা BD
+    - cron: "0 2 * * *"    # BD  8:00 AM — irony_text   (slot 1)
+    - cron: "33 3 * * *"   # BD  9:33 AM — info_image   (slot 2)
+    - cron: "7 5 * * *"    # BD 11:07 AM — article_image (slot 3)
+    - cron: "40 6 * * *"   # BD 12:40 PM — irony_text   (slot 4)
+    - cron: "13 8 * * *"   # BD  2:13 PM — info_image   (slot 5)
+    - cron: "47 9 * * *"   # BD  3:47 PM — article_image (slot 6)
+    - cron: "20 11 * * *"  # BD  5:20 PM — irony_text   (slot 7)
+    - cron: "53 12 * * *"  # BD  6:53 PM — info_image   (slot 8)
+    - cron: "27 14 * * *"  # BD  8:27 PM — article_image (slot 9)
+    - cron: "0 16 * * *"   # BD 10:00 PM — irony_text   (slot 10)
   workflow_dispatch:
     inputs:
       post_type:
@@ -33,19 +38,50 @@ jobs:
       - name: Determine post type
         id: post_type
         run: |
+          # UTC সময় (ঘণ্টা + মিনিট) থেকে post type নির্ধারণ
           HOUR=$(date -u +%H)
+          MIN=$(date -u +%M)
+          HHMM="${HOUR}${MIN}"
           INPUT_TYPE="${{ github.event.inputs.post_type }}"
 
-          echo "Current UTC hour: $HOUR"
+          echo "Current UTC time: ${HOUR}:${MIN} (HHMM=$HHMM)"
 
           if [ -n "$INPUT_TYPE" ] && [ "$INPUT_TYPE" != "random" ]; then
+            # Manual dispatch — সরাসরি input ব্যবহার করো
             echo "flag=--$INPUT_TYPE" >> $GITHUB_OUTPUT
-          elif [ "$HOUR" = "02" ] || [ "$HOUR" = "2" ] || [ "$HOUR" = "9" ] || [ "$HOUR" = "09" ]; then
+          elif [ "$HOUR" = "02" ] || [ "$HOUR" = "2" ]; then
+            # slot 1 — BD 08:00 — irony_text
             echo "flag=--irony" >> $GITHUB_OUTPUT
-          elif [ "$HOUR" = "06" ] || [ "$HOUR" = "6" ] || [ "$HOUR" = "15" ]; then
+          elif [ "$HOUR" = "03" ] || [ "$HOUR" = "3" ]; then
+            # slot 2 — BD 09:33 — info_image
             echo "flag=--info" >> $GITHUB_OUTPUT
-          else
+          elif [ "$HOUR" = "05" ] || [ "$HOUR" = "5" ]; then
+            # slot 3 — BD 11:07 — article_image
             echo "flag=--article" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" = "06" ] || [ "$HOUR" = "6" ]; then
+            # slot 4 — BD 12:40 — irony_text
+            echo "flag=--irony" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" = "08" ] || [ "$HOUR" = "8" ]; then
+            # slot 5 — BD 14:13 — info_image
+            echo "flag=--info" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" = "09" ] || [ "$HOUR" = "9" ]; then
+            # slot 6 — BD 15:47 — article_image
+            echo "flag=--article" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" = "11" ]; then
+            # slot 7 — BD 17:20 — irony_text
+            echo "flag=--irony" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" = "12" ]; then
+            # slot 8 — BD 18:53 — info_image
+            echo "flag=--info" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" = "14" ]; then
+            # slot 9 — BD 20:27 — article_image
+            echo "flag=--article" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" = "16" ]; then
+            # slot 10 — BD 22:00 — irony_text
+            echo "flag=--irony" >> $GITHUB_OUTPUT
+          else
+            # Fallback — random
+            echo "flag=--now" >> $GITHUB_OUTPUT
           fi
 
       - name: Run poster
