@@ -13,6 +13,7 @@ async function test() {
   
   console.log("ENDPOINT:", ENDPOINT);
   console.log("API_KEY:", API_KEY ? API_KEY.slice(0, 10) + "..." : "❌ নেই");
+
   
   
 
