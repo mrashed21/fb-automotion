@@ -11,6 +11,7 @@ async function test() {
 
   const base = ENDPOINT.replace(/\/api\/projects\/.*$/, "").replace(/\/openai\/v1.*$/, "");
   console.log("BASE URL:", base);
+  
 
   // সব possible endpoint format try করি
   const urls = [
