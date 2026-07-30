@@ -8,12 +8,10 @@ async function test() {
   console.log("ENDPOINT:", ENDPOINT);
   console.log("API_KEY:", API_KEY ? API_KEY.slice(0, 10) + "..." : "❌ নেই");
   
-
   const base = ENDPOINT.replace(/\/api\/projects\/.*$/, "").replace(/\/openai\/v1.*$/, "");
   console.log("BASE URL:", base);
 
   
-
   // সব possible endpoint format try করি
   const urls = [
     `${base}/openai/deployments/gpt-4.1/chat/completions?api-version=2024-12-01-preview`,
