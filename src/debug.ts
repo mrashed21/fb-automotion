@@ -11,7 +11,6 @@ async function test() {
   const base = ENDPOINT.replace(/\/api\/projects\/.*$/, "").replace(/\/openai\/v1.*$/, "");
   console.log("BASE URL:", base);
 
-  
   // সব possible endpoint format try করি
   const urls = [
     `${base}/openai/deployments/gpt-4.1/chat/completions?api-version=2024-12-01-preview`,
